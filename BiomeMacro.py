@@ -1,8 +1,5 @@
 import sys, types as _types
 
-# ── Stub autoit FIRST before anything else loads ──────────────────────────
-# pyautogui (and some of its deps) try to import 'autoit' on Windows.
-# Inject a dummy module so the import succeeds without autoit installed.
 if "autoit" not in sys.modules:
     _autoit_stub = _types.ModuleType("autoit")
     _autoit_stub.click       = lambda *a, **k: None
@@ -247,9 +244,7 @@ def load_config():
 def save_config(cfg):
     with open(CONFIG_FILE,"w") as f: cfg.write(f)
 
-# ══════════════════════════════════════════════════════════════════════════
-#  Log reading — ported directly from SolsScope roblox_utils.py
-# ══════════════════════════════════════════════════════════════════════════
+
 def _get_log_dir():
     """Return Roblox log directory (Player or MS Store)."""
     p = os.path.join(LOCAL_APP,"Roblox","logs")
@@ -539,8 +534,7 @@ def do_anti_kick():
         pyautogui.keyDown("space"); time.sleep(0.1); pyautogui.keyUp("space")
     except: pass
 
-# Relative coords as fractions of the Roblox window (1920x1080 reference).
-# These work in ANY resolution and both fullscreen and windowed mode.
+
 AHK_ITEM_REL = {
     "open_inventory": (46/1920,  520/1080),
     "items_btn":      (1279/1920, 342/1080),
@@ -767,7 +761,6 @@ AURA_LIST = [
 ]
 
 # ── Leaderboard ───────────────────────────────────────────────────────────
-# Uses JSONBin.io public bin — free shared leaderboard for all users
 LB_BIN_ID  = "69bc2143aa77b81da9fcb1a9"
 LB_API_KEY = "$2a$10$4/dlQeOTb63xwjnB01i.ye.PCRxsC0Zvbm6FXwYu/s57hGrt4qjl."
 LB_URL     = f"https://api.jsonbin.io/v3/b/{LB_BIN_ID}"
@@ -848,12 +841,12 @@ class MultiFMacroApp:
     def _build_gui(self):
         W, H = 940, 520
 
-        # Get real screen dimensions BEFORE overrideredirect (still has WM context)
-        self.root.withdraw()          # hide briefly so no flash
+
+        self.root.withdraw()         
         self.root.update_idletasks()
         sw = self.root.winfo_screenwidth()
         sh = self.root.winfo_screenheight()
-        # Fallback via screeninfo/ctypes helper if Tk returns junk
+  
         if sw < 100 or sh < 100:
             sw, sh = get_screen_size()
 
@@ -864,7 +857,7 @@ class MultiFMacroApp:
         self.root.overrideredirect(True)
         self.root.configure(bg=BG0)
         self.root.minsize(W, H)
-        self.root.deiconify()         # show now with correct size+pos
+        self.root.deiconify()        
         self.root.update()
 
         # ── Titlebar ──────────────────────────────────────────────────────
@@ -1522,15 +1515,13 @@ class MultiFMacroApp:
             return
         self._fish_st(f"⏳  Found Python: {python_exe}")
 
-        # ── Install dependencies one by one ─────────────────────────────
-        # numpy must come first with a pre-built wheel (no C compiler on user machines)
-        # keyboard and pywin32 sometimes need --user flag to install properly
+      
         DEPS_ORDERED = [
-            "numpy<2",          # must be first, needs --only-binary
+            "numpy<2",         
             "PyQt6",
             "Pillow",
             "keyboard",
-            "autoit",           # required by pyautogui/pynput on Windows
+            "autoit",          
             "pyautogui",
             "requests",
             "pytesseract",
@@ -1925,7 +1916,7 @@ class MultiFMacroApp:
         self.timer_var.set(f"{h:02d}:{m:02d}:{s:02d}")
         self._timer_job = self.root.after(1000, self._timer_tick)
 
-    # ── Log poll — reads log every 500ms using SolsScope methods ──────────
+   
     def _poll(self):
         if not self.started: return
         if not self.paused:
@@ -1938,7 +1929,7 @@ class MultiFMacroApp:
     def _check(self):
         url = self.wh_url.get().strip()
 
-        # ── Biome — SolsScope get_latest_hovertext() ──────────────────
+      
         biome = get_latest_hovertext()
         if biome and biome != self.last_biome:
             prev = self.last_biome; self.last_biome = biome
@@ -1958,7 +1949,7 @@ class MultiFMacroApp:
                             args=(url,make_biome_embed(biome,True,self.ps_url.get().strip(),
                                                        self.disc_id.get().strip(),s,
                                                        self._get_ping_biomes())),daemon=True).start()
-            # Track count for every non-NORMAL biome start
+   
             if biome != "NORMAL":
                 self.biome_counts[biome] = self.biome_counts.get(biome, 0) + 1
                 self.root.after(0, self._refresh_biome_stats)
@@ -1966,7 +1957,7 @@ class MultiFMacroApp:
                 self.cfg["BiomeCounts"] = {_cfg_key(b): str(c) for b,c in self.biome_counts.items()}
                 threading.Thread(target=save_config, args=(self.cfg,), daemon=True).start()
 
-        # ── Aura — SolsScope get_latest_equipped_aura() ───────────────
+    
         if self.aura_enabled.get():
             aura = get_latest_equipped_aura()
             print(f"[Aura poll] detected={aura!r}  last={self.last_aura!r}")
@@ -1989,7 +1980,7 @@ class MultiFMacroApp:
                 else:
                     print("[Aura fire] SKIPPED — url is empty!")
 
-        # ── Merchant — SolsScope get_latest_merchant_info() ───────────
+    
         if self.merch_log.get():
             result = get_latest_merchant(self.last_merchant_ts)
             if result:
@@ -2036,7 +2027,7 @@ class MultiFMacroApp:
             self.root.destroy()
         except Exception:
             pass
-        # Also destroy the anchor root so the process fully exits
+     
         try:
             self.root.master.destroy()
         except Exception:
@@ -2046,10 +2037,7 @@ class MultiFMacroApp:
 if __name__ == "__main__":
     import traceback
 
-    # ── Taskbar anchor ────────────────────────────────────────────────────
-    # overrideredirect Toplevels are invisible to the Windows taskbar.
-    # Fix: keep a transparent off-screen Tk() root permanently alive so
-    # Windows gives it a taskbar button.  The real UI is a Toplevel child.
+ 
     anchor = tk.Tk()
     anchor.title(f"MultiFMacro  {VERSION}")
     anchor.geometry("1x1+-32000+-32000")
@@ -2061,21 +2049,21 @@ if __name__ == "__main__":
         anchor.iconphoto(True, _ico)
     except Exception:
         pass
-    # NEVER withdraw — that removes the taskbar slot.  Alpha=0 hides it visually.
+
     anchor.attributes("-alpha", 0.0)
     anchor.update()
 
-    # Real frameless window
+    
     root = tk.Toplevel(anchor)
     root.title(f"MultiFMacro  {VERSION}")
 
-    # Track whether the user intentionally minimized
+
     _minimized = [False]
     _ignore_focus_until = [0.0]
 
     def _minimize():
         _minimized[0] = True
-        _ignore_focus_until[0] = time.time() + 0.8  # ignore FocusIn for 800ms
+        _ignore_focus_until[0] = time.time() + 0.8  
         root.withdraw()
 
     def _restore():
@@ -2084,11 +2072,11 @@ if __name__ == "__main__":
         root.lift()
         root.focus_force()
 
-    # Taskbar button click → anchor gets focus/map event → restore only if minimized
+
     def _anchor_focus(e=None):
         try:
             if time.time() < _ignore_focus_until[0]:
-                return  # spurious FocusIn right after withdraw — ignore it
+                return  
             if _minimized[0]:
                 _restore()
             else:
@@ -2111,10 +2099,10 @@ if __name__ == "__main__":
 
     app = MultiFMacroApp(root)
 
-    # Wire minimize button to our controlled minimize (not raw withdraw)
+   
     app._minimize_fn = _minimize
 
-    # ── Rounded corners via Windows 11 DWM API ───────────────────────────
+  
     def _apply_rounded_corners(hwnd):
         try:
             import ctypes
