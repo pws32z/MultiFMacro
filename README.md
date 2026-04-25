@@ -3,7 +3,7 @@
 A feature-rich Roblox Sol's RNG macro with automatic biome, aura, egg, merchant, and Eden detection — all in one clean UI.
 
 ![Downloads](https://img.shields.io/github/downloads/pws32z/MultiFMacro/total?style=flat-square&color=7c6af7&label=Downloads)
-![Version](https://img.shields.io/badge/version-V4.4-7c6af7?style=flat-square)
+![Version](https://img.shields.io/badge/version-V4.5-7c6af7?style=flat-square)
 ![Platform](https://img.shields.io/badge/platform-Windows-blue?style=flat-square)
 ![Language](https://img.shields.io/badge/language-Python-3776AB?style=flat-square&logo=python)
 
