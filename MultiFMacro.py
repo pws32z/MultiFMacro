@@ -1133,11 +1133,6 @@ try:
         ("Sovereign", "1/750,000,000"),
     ]
 
-    LB_BIN_ID  = "69bc2143aa77b81da9fcb1a9"
-    LB_API_KEY = "$2a$10$4/dlQeOTb63xwjnB01i.ye.PCRxsC0Zvbm6FXwYu/s57hGrt4qjl."
-    LB_URL     = f"https://api.jsonbin.io/v3/b/{LB_BIN_ID}"
-    LB_HEADERS_READ  = {"X-Master-Key": LB_API_KEY}
-    LB_HEADERS_WRITE = {"X-Master-Key": LB_API_KEY, "Content-Type": "application/json"}
 
     def lb_fetch():
         try:
